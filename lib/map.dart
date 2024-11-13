@@ -4,6 +4,8 @@ import 'package:latlong2/latlong.dart';
 // import 'package:location/location.dart';
 
 class MyMap extends StatelessWidget {
+  double lat, long;
+  MyMap({required this.lat, required this.long});
   // Location location = new Location();
 
   // getLocation() async {
@@ -37,9 +39,8 @@ class MyMap extends StatelessWidget {
         onTap: (tapPosition, point) {
           // getLocation();
         },
-        initialCenter:
-            LatLng(51.509364, -0.128928), // Center the map over London
-        initialZoom: 9.2,
+        initialCenter: LatLng(lat, long), // Center the map over London
+        initialZoom: 15.2,
       ),
       children: [
         TileLayer(

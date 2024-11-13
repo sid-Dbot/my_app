@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:location/location.dart';
+import 'package:location/location.dart';
 import 'package:my_app/map.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -18,30 +18,55 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final title = 'Home Page';
-  // Location location = new Location();
+  Location location = new Location();
+// Future locationPermission(context) async {
+//   PermissionStatus status = await Permission.location.request();
+//   if (status.isGranted == false) {
+//     await Permission.location.request();
+//   } else if (status.isGranted == true) {
+//   } else if (status.isDenied == true) {
+//     await Permission.location.request();
+//   } else if (status.isPermanentlyDenied == true) {
+//     openDialogSetting(context);
+//   }
+// }
+  locationService() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
 
-  // getLocation() async {
-  //   bool _serviceEnabled;
-  //   PermissionStatus _permissionGranted;
-  //   LocationData _locationData;
-  //   _serviceEnabled = await location.serviceEnabled();
-  //   if (!_serviceEnabled) {
-  //     _serviceEnabled = await location.requestService();
-  //     if (!_serviceEnabled) {
-  //       return;
-  //     }
-  //   }
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+  }
 
-  //   _permissionGranted = await location.hasPermission();
-  //   if (_permissionGranted == PermissionStatus.denied) {
-  //     _permissionGranted = await location.requestPermission();
-  //     if (_permissionGranted != PermissionStatus.granted) {
-  //       return;
-  //     }
-  //   }
-  //   _locationData = await location.getLocation();
-  //   print(_locationData);
-  // }
+  getLocation() async {
+    LocationData _locationData;
+
+    locationService();
+
+    _locationData = await location.getLocation();
+    latlong = _locationData;
+    setState(() {});
+  }
+
+  var latlong;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             try {
-              // getLocation();
+              getLocation();
             } catch (e) {
               print(e.toString());
             }
@@ -70,6 +95,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(title),
         ),
-        body: MyMap());
+        body: MyMap(
+          lat: latlong.latitude!.toDouble(),
+          long: latlong.longitude!,
+        ));
   }
 }
