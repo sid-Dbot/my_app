@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:my_app/customCurvedBottomNav.dart';
 import 'package:my_app/googleMaps.dart';
 import 'package:my_app/map.dart';
 
@@ -70,6 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // getLocation();
   }
 
+  List<Widget> body = [
+    CustomContainer(),
+  ];
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -81,15 +86,15 @@ class _MyHomePageState extends State<MyHomePage> {
     int index = 0;
     return Scaffold(
         backgroundColor: Colors.grey.shade300,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            try {
-              getLocation();
-            } catch (e) {
-              print(e.toString());
-            }
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     try {
+        //       getLocation();
+        //     } catch (e) {
+        //       print(e.toString());
+        //     }
+        //   },
+        // ),
         appBar: AppBar(
           // TRY THIS: Try changing the color here to a specific color (to
           // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -99,82 +104,96 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(title),
         ),
-        bottomNavigationBar: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(boxShadow: [
-                  // BoxShadow(
-                  //   blurRadius: 2,
-                  //   blurStyle: BlurStyle.inner,
-                  //   // offset: Offset(1000, 20),
-                  // )
-                ]),
+        bottomNavigationBar: Container(
+          color: Colors.transparent,
+          height: 80,
+          child: Stack(
+            alignment: AlignmentDirectional.bottomStart,
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
                 child: CustomPaint(
-                  size: Size(MediaQuery.of(context).size.width, 50),
+                  size: Size(MediaQuery.of(context).size.width, 70),
                   painter: CurvedPainter(
-                    color: Colors.black,
-                  ),
-                  // child: BottomNavigationBar(
-                  //     selectedIconTheme: IconThemeData(color: Colors.amber),
-                  //     elevation: 0,
-                  //     backgroundColor: Colors.transparent,
-                  //     currentIndex: 0,
-                  //     onTap: (value) {
-                  //       index = value;
-                  //       print(index);
-                  //       setState(() {});
-                  //     },
-                  //     type: BottomNavigationBarType.fixed,
-                  //     items: [
-                  //       BottomNavItem(),
-                  //       BottomNavItem(),
-                  //       BottomNavItem(),
-                  //       BottomNavItem(),
-                  //       BottomNavItem(),
-                  //     ]),
+                      color: Colors.white,
+                      shadowOffset: Offset(4, 4),
+                      shadowBlur: 3),
+
                   // foregroundPainter: CurvedPainter(),
                 ),
               ),
-            ),
-            // Container(
-            //   height: 60,
-            //   decoration: BoxDecoration(
-            //       color: Colors.red,
-            //       borderRadius: BorderRadius.only(
-            //           topRight: Radius.circular(20),
-            //           topLeft: Radius.circular(20))),
-            // )
-            // BottomNavigationBar(
-            //     backgroundColor: Colors.transparent,
-            //     currentIndex: index,
-            //     onTap: (value) {
-            //       index = value;
-            //       print(index);
-            //       setState(() {});
-            //     },
-            //     type: BottomNavigationBarType.fixed,
-            //     items: [
-            //       BottomNavItem(),
-            //       BottomNavItem(),
-            //       BottomNavItem(),
-            //     ]),
-          ],
+              Positioned(
+                bottom: 5,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BottomNavItem(icon: Icons.home, label: 'Home'),
+                      BottomNavItem(icon: Icons.home, label: 'Home'),
+                      BottomNavItem(icon: Icons.fingerprint, label: 'Home'),
+                      BottomNavItem(icon: Icons.home, label: 'Home'),
+                      BottomNavItem(icon: Icons.home, label: 'Home'),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
-        body: MyMap(
-          lat: 27.7103,
-          long: 85.3222,
-        ));
+        body: CustomContainer());
   }
 
-  BottomNavigationBarItem BottomNavItem() {
-    return BottomNavigationBarItem(
-      icon: Icon(Icons.map),
-      label: 'Map',
+  Widget BottomNavItem(
+      {required IconData icon,
+      required String label,
+      Color color = Colors.grey}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        radius: 40, borderRadius: BorderRadius.circular(40),
+        // splashColor: Colors.amber,
+        onTap: () {
+          print(label);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                size: 30,
+                color: color,
+              ),
+              Text(
+                '$label',
+                style: TextStyle(fontSize: 12),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomContainer extends StatelessWidget {
+  const CustomContainer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      color: Colors.amber,
     );
   }
 }
@@ -201,48 +220,49 @@ class CustomNotchedShape extends NotchedShape {
 }
 
 class CurvedPainter extends CustomPainter {
-  Color color;
-  CurvedPainter({required this.color});
+  final Color color;
+  final Color shadowColor;
+  final double shadowBlur;
+  final Offset shadowOffset;
+  final double cornerRadius, curve;
+
+  CurvedPainter(
+      {required this.color,
+      this.shadowColor =
+          const Color(0x55000000), // Default semi-transparent black
+      this.shadowBlur = 10.0,
+      this.shadowOffset = const Offset(4, 4),
+      this.cornerRadius = 40,
+      this.curve = 45});
+
   @override
   void paint(Canvas canvas, Size size) {
+    final Paint shadowPaint = Paint()
+      ..color = shadowColor
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadowBlur);
+
+    final Path path = Path();
+
+    path.moveTo(0, cornerRadius);
+    path.quadraticBezierTo(0, 10, cornerRadius, 0);
+    path.quadraticBezierTo(
+        size.width * 0.5, -curve, size.width - cornerRadius, 0);
+    path.quadraticBezierTo(size.width, 10, size.width, cornerRadius);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0, cornerRadius);
+    path.close();
+
+    // Draw the shadow (offset by shadowOffset)
+    canvas.save();
+    canvas.translate(shadowOffset.dx, shadowOffset.dy);
+    canvas.drawPath(path, shadowPaint);
+    canvas.restore();
+
+    // Draw the actual shape
     final Paint paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-
-    // final Path path = Path();
-    // path.moveTo(0, 0); // Start point
-    // // path.quadraticBezierTo(0, -25, size.width, 0);
-    // // path.moveTo(0, size.height);
-    // path.quadraticBezierTo(
-    //     size.width * 0.5, -45, size.width, 0); // Create curve
-    // path.lineTo(size.width, size.height); // Bottom-right corner
-    // path.lineTo(0, size.height);
-    final Path path = Path();
-
-    // Start at the top-left corner with a rounded border
-    const double cornerRadius = 40.0;
-    path.moveTo(0, cornerRadius);
-    path.quadraticBezierTo(0, 0, cornerRadius, 0);
-    path.moveTo(cornerRadius - 10, 0);
-    path.quadraticBezierTo(
-        size.width * 0.5, -45, size.width - cornerRadius + 20, 0);
-    // path.moveTo(size.width - cornerRadius, 0);
-    path.quadraticBezierTo(size.width, 0, size.width, cornerRadius);
-
-    // Add the top-middle curve
-
-    // Add the top-right rounded corner
-
-    // Right side (straight line down)
-    path.lineTo(size.width, size.height);
-
-    // Bottom edge (straight line)
-    path.lineTo(0, size.height);
-
-    // Left side (straight line up)
-    path.lineTo(0, cornerRadius);
-
-    path.close(); // Close path
 
     canvas.drawPath(path, paint);
   }
