@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/curvedBottom.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/homeScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(),
+      home: NewHomePage(),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 class MyMap extends StatelessWidget {
   double lat, long;
-  MyMap({required this.lat, required this.long});
+  MyMap({this.lat = 27.700769, this.long = 85.300140});
   // Location location = new Location();
 
   // getLocation() async {

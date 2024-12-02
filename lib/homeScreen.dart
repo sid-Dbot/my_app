@@ -1,167 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:my_app/customCurvedBottomNav.dart';
 import 'package:my_app/googleMaps.dart';
 import 'package:my_app/map.dart';
+import 'package:my_app/place.dart';
+import 'package:my_app/pod.dart';
 
-class MyHomePage extends StatefulWidget {
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget {
   final title = 'Home Page';
-  Location location = new Location();
-// Future locationPermission(context) async {
-//   PermissionStatus status = await Permission.location.request();
-//   if (status.isGranted == false) {
-//     await Permission.location.request();
-//   } else if (status.isGranted == true) {
-//   } else if (status.isDenied == true) {
-//     await Permission.location.request();
-//   } else if (status.isPermanentlyDenied == true) {
-//     openDialogSetting(context);
-//   }
-// }
-  locationService() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-  }
-
-  getLocation() async {
-    LocationData _locationData;
-
-    locationService();
-
-    _locationData = await location.getLocation();
-    latlong = _locationData;
-    setState(() {});
-  }
-
-  var latlong;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // getLocation();
-  }
-
-  List<Widget> body = [
-    CustomContainer(),
-  ];
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    int index = 0;
-    return Scaffold(
-        backgroundColor: Colors.grey.shade300,
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     try {
-        //       getLocation();
-        //     } catch (e) {
-        //       print(e.toString());
-        //     }
-        //   },
-        // ),
-        appBar: AppBar(
-          // TRY THIS: Try changing the color here to a specific color (to
-          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-          // change color while the other colors stay the same.
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(title),
-        ),
-        bottomNavigationBar: Container(
-          color: Colors.transparent,
-          height: 80,
-          child: Stack(
-            alignment: AlignmentDirectional.bottomStart,
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: CustomPaint(
-                  size: Size(MediaQuery.of(context).size.width, 70),
-                  painter: CurvedPainter(
-                      color: Colors.white,
-                      shadowOffset: Offset(4, 4),
-                      shadowBlur: 3),
-
-                  // foregroundPainter: CurvedPainter(),
-                ),
-              ),
-              Positioned(
-                bottom: 5,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BottomNavItem(icon: Icons.home, label: 'Home'),
-                      BottomNavItem(icon: Icons.home, label: 'Home'),
-                      BottomNavItem(icon: Icons.fingerprint, label: 'Home'),
-                      BottomNavItem(icon: Icons.home, label: 'Home'),
-                      BottomNavItem(icon: Icons.home, label: 'Home'),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-        body: CustomContainer());
+    return Consumer(
+      builder: (context, ref, child) {
+        ref.read(userLocationPod.notifier).getLocation();
+        final location = ref.watch(userLocationPod.notifier);
+        print(location.latlong.lat);
+        return MyMap(
+          long: location.latlong.long,
+          lat: location.latlong.lat,
+        );
+      },
+      child: Center(
+        child: LinearProgressIndicator(),
+      ),
+    );
   }
 
   Widget BottomNavItem(
       {required IconData icon,
       required String label,
+      required ontap,
       Color color = Colors.grey}) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         radius: 40, borderRadius: BorderRadius.circular(40),
         // splashColor: Colors.amber,
-        onTap: () {
-          print(label);
-        },
+        // onTap: ontap,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -179,21 +58,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CustomContainer extends StatelessWidget {
-  const CustomContainer({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: Colors.amber,
     );
   }
 }
