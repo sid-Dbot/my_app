@@ -16,17 +16,18 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.read(userLocationPod.notifier).getLocation();
-        final location = ref.watch(userLocationPod.notifier);
-        print(location.latlong.lat);
-        return MyMap(
-          long: location.latlong.long,
-          lat: location.latlong.lat,
-        );
+        // ref.read(userLocationPod.notifier).getLocation();
+        final location = ref.watch(userLocationPod);
+
+        return location.lat != 0.0
+            ? MyMap(
+                long: location.long,
+                lat: location.lat,
+              )
+            : Center(
+                child: LinearProgressIndicator(),
+              );
       },
-      child: Center(
-        child: LinearProgressIndicator(),
-      ),
     );
   }
 
