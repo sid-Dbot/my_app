@@ -48,6 +48,7 @@ class CustomCurvedBottomNav extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: items,
             ),
           ),
