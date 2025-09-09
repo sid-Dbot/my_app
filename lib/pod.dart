@@ -2,8 +2,8 @@ import 'package:location/location.dart';
 import 'package:my_app/place.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LocationNotifier extends StateNotifier<Place> {
-  LocationNotifier() : super(Place(lat: 00.0, long: 00.0)) {
+class LocationNotifier extends AsyncNotifier {
+  LocationNotifier() : super() {
     getLocation();
   }
 
@@ -39,11 +39,20 @@ class LocationNotifier extends StateNotifier<Place> {
     locationService();
 
     _locationData = await location.getLocation();
-    state = Place(
-        lat: _locationData.latitude!.toDouble(),
-        long: _locationData.longitude!);
+    return _locationData;
+    // state = Place(
+    //     lat: _locationData.latitude!.toDouble(),
+    //     long: _locationData.longitude!);
+    // print(state.lat);
+  }
+
+  @override
+  build() async {
+    // TODO: implement build
+    return await getLocation();
+    // return Place(lat: 00.0, long: 00.0);
   }
 }
 
-final userLocationPod =
-    StateNotifierProvider<LocationNotifier, Place>((ref) => LocationNotifier());
+// final userLocationPod =
+//     StateNotifierProvider<LocationNotifier, Place>((ref) => LocationNotifier());

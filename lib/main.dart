@@ -1,10 +1,13 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/curvedBottom.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/homeScreen.dart';
 
 void main() {
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(DevicePreview(builder: (context) {
+    return ProviderScope(child: const MyApp());
+  }));
 }
 
 class MyApp extends StatelessWidget {
@@ -15,6 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.

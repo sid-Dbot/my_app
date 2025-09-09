@@ -14,20 +14,24 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        // ref.read(userLocationPod.notifier).getLocation();
-        final location = ref.watch(userLocationPod);
+    // return Consumer(
+    //   builder: (context, ref, child) {
+    //     // ref.read(userLocationPod.notifier).getLocation();
+    //     // final location = ref.watch(LocationNotifier());
 
-        return location.lat != 0.0
-            ? MyMap(
-                long: location.long,
-                lat: location.lat,
-              )
-            : Center(
-                child: LinearProgressIndicator(),
-              );
-      },
+    //     return location.lat != 0.0
+    //         ? MyMap(
+    //             long: location.long,
+    //             lat: location.lat,
+    //           )
+    //         : Center(
+    //             child: LinearProgressIndicator(),
+    //           );
+    //   },
+    // );
+
+    return Container(
+      color: Colors.amber,
     );
   }
 

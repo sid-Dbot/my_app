@@ -71,7 +71,7 @@ class _NewHomePageState extends State<NewHomePage> {
         title: Text(title),
       ),
       bottomNavigationBar: CustomCurvedBottomNav(
-        cornerRadius: 0,
+        // cornerRadius: 0,
         items: [
           BottomNavItem(
               icon: Icons.home,
